@@ -10,7 +10,8 @@ export const Navbar = () => {
       </div>
       <div className="icons">
         <span>Logged in as: admin@admin.com</span>
-        <img src="gear.svg" alt="" />
+        <span>|</span>
+        <button onClick={()=>alert("logout")}>Logout</button>
       </div>
     </div>
   );
