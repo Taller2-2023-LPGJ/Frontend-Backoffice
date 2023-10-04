@@ -1,7 +1,19 @@
 import React from "react";
 import "./navbar.scss";
+import { useAuth } from "../../context/AuthContext";
 
 export const Navbar = () => {
+
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+
+    // popup confirm logout?
+    console.log("logging out...")
+    logout()
+
+  }
+
   return (
     <div className="navbar">
       <div className="logo">
@@ -11,7 +23,7 @@ export const Navbar = () => {
       <div className="icons">
         <span>Logged in as: admin@admin.com</span>
         <span>|</span>
-        <button onClick={()=>alert("logout")}>Logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
   );

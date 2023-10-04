@@ -8,9 +8,12 @@ import { Footer } from "./components/footer/Footer";
 import { Navbar } from "./components/navbar/Navbar";
 import { Menu } from "./components/menu/Menu";
 
-import "./styles/global.scss"
+import "./styles/global.scss";
+import { AuthProvider} from "./context/AuthContext";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
+
   const Layout = () => {
     return (
       <div className="main">
@@ -31,33 +34,37 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element:<Layout/>,
+      element: <Layout />,
       children: [
         {
-          path:"/",
-          element:<Home/>
+          path: "/",
+          element: <Home />,
         },
         {
-          path:"/users",
-          element:<Users/>
+          path: "/users",
+          element: <Users />,
         },
         {
-          path:"/admins",
-          element:<Admins/>
+          path: "/admins",
+          element: <Admins />,
         },
         {
-          path:"/posts",
-          element:<Posts/>
-        }
-      ]
+          path: "/posts",
+          element: <Posts />,
+        },
+      ],
     },
     {
-      path:"/login",
-      element:<Login/>
+      path: "/login",
+      element: <Login />,
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
+  );
 }
 
 export default App;
