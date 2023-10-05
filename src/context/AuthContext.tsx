@@ -1,19 +1,31 @@
 // src/context/AuthContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+
+interface User {
+  mail:string,
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: () => void;
+  user?: User;
+  login: (mail:string, pass:string) => boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user,setUser] = useState<User|undefined>();
+
+  const login = (mail:string, pass:string) => {
+
+    console.log("Login using...")
     setIsAuthenticated(true);
+    setUser({mail:mail})
+    return true
   };
 
   const logout = () => {
@@ -21,7 +33,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated,user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

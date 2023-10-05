@@ -1,28 +1,32 @@
-import React from 'react'
-import "./menu.scss"
-import { Link } from 'react-router-dom'
+import React from "react";
+import "./menu.scss";
+import { Link } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
+import GroupIcon from "@mui/icons-material/Group";
+import ArticleIcon from "@mui/icons-material/Article";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 export const Menu = () => {
   return (
-    <div className='menu'>
+    <div className="menu">
       <div className="item">
-      <Link to="/" className="listItem" >
-        <img src='/home.svg' alt=""/>
-        <span className="listItemTitle">Home</span>
-      </Link>
-      <Link to="/users" className="listItem" >
-        <img src='/users.svg' alt=""/>
-        <span className="listItemTitle">Users</span>
-      </Link>
-      <Link to="/posts" className="listItem">
-        <img src='/posts.svg' alt=""/>
-        <span className="listItemTitle">Posts</span>
-      </Link>
-      <Link to="/admins" className="listItem">
-        <img src='/admins.svg' alt=""/>
-        <span className="listItemTitle">Admins</span>
-      </Link>
+        <Link to="/" className="listItem">
+          <HomeIcon fontSize="medium" />
+          <span className="listItemTitle">Home</span>
+        </Link>
+        <Link to="/users" className="listItem">
+          <GroupIcon fontSize="medium" />
+          <span className="listItemTitle">Users</span>
+        </Link>
+        <Link to="/posts" className="listItem">
+          <ArticleIcon fontSize="medium" />
+          <span className="listItemTitle">Posts</span>
+        </Link>
+        <Link to="/admins" className="listItem">
+          <ManageAccountsIcon fontSize="medium" />
+          <span className="listItemTitle">Admins</span>
+        </Link>
       </div>
     </div>
-  )
-}
+  );
+};

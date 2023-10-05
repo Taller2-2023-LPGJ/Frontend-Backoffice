@@ -1,17 +1,19 @@
 import React from "react";
 import "./navbar.scss";
 import { useAuth } from "../../context/AuthContext";
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
 
-  const { logout } = useAuth();
+  const {user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-
-    // popup confirm logout?
+    // popup confirm logout
     console.log("logging out...")
-    logout()
-
+    logout() // loading wait logout
+    navigate("/")
   }
 
   return (
@@ -21,9 +23,9 @@ export const Navbar = () => {
         <span>SnapMsg Admin</span>
       </div>
       <div className="icons">
-        <span>Logged in as: admin@admin.com</span>
+        <span>Logged in as: {user?.mail}</span>
         <span>|</span>
-        <button onClick={handleLogout}>Logout</button>
+        <Button variant="contained" onClick={handleLogout}>Logout</Button>
       </div>
     </div>
   );
