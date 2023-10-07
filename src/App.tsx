@@ -1,13 +1,31 @@
 import "./styles/global.scss";
-import { AuthProvider} from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import AppRouter from "./routes/AppRouter";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 function App() {
   
+  const theme = createTheme({
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#1976d2',
+      },
+      secondary: {
+        main: '#9c27b0',
+      },
+      error: {
+        main: '#d32f2f',
+      },
+    },
+  });
+
   return (
-    <AuthProvider>
-      <AppRouter />
-    </AuthProvider>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
