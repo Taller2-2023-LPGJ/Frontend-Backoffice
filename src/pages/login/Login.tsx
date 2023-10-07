@@ -22,7 +22,7 @@ export const Login = () => {
   return (
     <div className="loginHbox">
       <div className="loginVbox">
-        <Typography variant="h2" className="title">
+        <Typography variant="h1" className="title" >
           SnapMsg Admin
         </Typography>
 
