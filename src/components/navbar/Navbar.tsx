@@ -10,9 +10,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // popup confirm logout
-    console.log("logging out...")
-    logout() // loading wait logout
+    logout()
     navigate("/")
   }
 
