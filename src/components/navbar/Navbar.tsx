@@ -16,7 +16,7 @@ export const Navbar = () => {
 
   return (
     <div className="navbar">
-      <div className="logo">
+      <div className="logo" onClick={()=>navigate("/")}>
         <img src="logo.svg" alt="" />
         <span>SnapMsg Admin</span>
       </div>
