@@ -26,7 +26,6 @@ function createData(
 
 const rows = [
   createData("lucas123", "lucasgrati@gmail.com", "Unblocked", "..."),
-  createData("lucas123", "lucasgrati@gmail.com", "Unblocked", "..."),
 ];
 
 export const Admins = () => {
