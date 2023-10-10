@@ -1,11 +1,15 @@
 import {
   Button,
   CircularProgress,
+  FormControl,
   IconButton,
   InputAdornment,
+  InputLabel,
   Menu,
   MenuItem,
   Paper,
+  Select,
+  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -46,9 +50,14 @@ export const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleEffect = async () => {
+
+    if (statusFilter === "all") {
+      setStatusFilter("")
+    }
+    
     try {
       const result = await axios.get(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?amountperpage=${MAX_ROWS}&currentpage=${currentPage}`,
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?email=${email}&username=${inputSearch}&amountperpage=${MAX_ROWS}&isBlocked=${statusFilter}&currentpage=${currentPage}`,
         {}
       );
 
@@ -67,7 +76,6 @@ export const Users = () => {
       setisLoading(false);
     } catch (e) {}
   };
-
 
   useEffect(() => {
     handleEffect();
@@ -89,9 +97,16 @@ export const Users = () => {
   };
 
   const handleRefresh = () => {
-    // if is empty --> alert
-    alert(`Filtering username: ${inputSearch} and email: ${email}`);
+    setisLoading(true);
+    handleEffect();
   };
+
+  const [statusFilter, setStatusFilter] = useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setStatusFilter(event.target.value as string);
+  };
+
   return (
     <div className="users">
       <div style={{ marginBottom: "1%" }}>
@@ -121,6 +136,19 @@ export const Users = () => {
               ),
             }}
           />
+          <FormControl style={{ marginLeft: "10px", width: "20%" }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={statusFilter}
+              label="All"
+              onChange={handleChange}
+            >
+              <MenuItem value={"all"}>All</MenuItem>
+              <MenuItem value={"false"}>Unblocked</MenuItem>
+              <MenuItem value={"true"}>Blocked</MenuItem>
+            </Select>
+          </FormControl>
+
           <div className="refresh">
             <Button
               sx={{ width: "50px", height: "50px" }}
@@ -185,7 +213,7 @@ export const Users = () => {
             </Table>
           </TableContainer>
           <div className="pagination">
-            {Array.from({ length: totalPages}).map((_, index) => (
+            {Array.from({ length: totalPages }).map((_, index) => (
               <Button
                 variant="outlined"
                 style={{ margin: "3px" }}
