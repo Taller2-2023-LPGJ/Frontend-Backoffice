@@ -1,0 +1,43 @@
+@import "../../styles/variables.scss";
+
+.modalWindow {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: $soft-color;
+}
+
+.customTypography {
+    color:  $soft-color;
+}
+
+.modalContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Background overlay color */
+}
+
+.modalContent {
+  background-color: $main-bg; /* Modal background color */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0);
+  width: 40%; 
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2%;
+}
+
+.inputRow1,
+.inputRow2 {
+  display: flex;
+  margin-bottom: 1%;
+  flex-direction: column;
+  width: 100%;
+}
