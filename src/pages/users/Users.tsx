@@ -42,14 +42,17 @@ function createData(username: string, email: string, status: string) {
 export const Users = () => {
   const emptyRow = [createData("", "", "")];
   const [rows, setRows] = useState<Row[]>(emptyRow);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleEffect = async () => {
     try {
       const result = await axios.get(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?amountperpage=${MAX_ROWS}&currentpage=1`,
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?amountperpage=${MAX_ROWS}&currentpage=${currentPage}`,
         {}
       );
 
+      setTotalPages(Math.ceil(result.data.totalcount / MAX_ROWS));
       const users = result.data.paginateData;
       let newRows: Row[] = [];
       users.map((user: User) => {
@@ -62,13 +65,13 @@ export const Users = () => {
       });
       setRows(newRows);
       setisLoading(false);
-    } catch (e) {
-    }
+    } catch (e) {}
   };
+
 
   useEffect(() => {
     handleEffect();
-  }, []);
+  }, [currentPage]);
 
   const [inputSearch, setInputSearch] = useState("");
   const [email, setEmail] = useState("");
@@ -86,7 +89,7 @@ export const Users = () => {
   };
 
   const handleRefresh = () => {
-    // if is empty --> nada
+    // if is empty --> alert
     alert(`Filtering username: ${inputSearch} and email: ${email}`);
   };
   return (
@@ -130,49 +133,70 @@ export const Users = () => {
         </div>
       </div>
       {isLoading ? (
-        <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"50vh"}}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "50vh",
+          }}
+        >
           <CircularProgress color="primary" />
         </div>
       ) : (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Username</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Status</TableCell>
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.username}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.username}
-                  </TableCell>
-                  <TableCell align="left">{row.email}</TableCell>
-                  <TableCell align="left">{row.status}</TableCell>
-                  <TableCell align="center">
-                    <IconButton onClick={handleClick}>
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={handleClose}>Block</MenuItem>
-                      <MenuItem onClick={handleClose}>Unblock</MenuItem>
-                    </Menu>
-                  </TableCell>
+        <div>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Username</TableCell>
+                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Status</TableCell>
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow
+                    key={row.username}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.username}
+                    </TableCell>
+                    <TableCell align="left">{row.email}</TableCell>
+                    <TableCell align="left">{row.status}</TableCell>
+                    <TableCell align="center">
+                      <IconButton onClick={handleClick}>
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={handleClose}>Block</MenuItem>
+                        <MenuItem onClick={handleClose}>Unblock</MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className="pagination">
+            {Array.from({ length: totalPages}).map((_, index) => (
+              <Button
+                variant="outlined"
+                style={{ margin: "3px" }}
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+              >
+                {index + 1}
+              </Button>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
