@@ -25,7 +25,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 
-const MAX_ROWS = 8;
+const MAX_ROWS = 5;
 
 type User = {
   username: string;
@@ -50,11 +50,10 @@ export const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleEffect = async () => {
-
     if (statusFilter === "all") {
-      setStatusFilter("")
+      setStatusFilter("");
     }
-    
+
     try {
       const result = await axios.get(
         `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?email=${email}&username=${inputSearch}&amountperpage=${MAX_ROWS}&isBlocked=${statusFilter}&currentpage=${currentPage}`,
@@ -88,12 +87,47 @@ export const Users = () => {
 
   const [isLoading, setisLoading] = useState(true);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBlock = async (username: string) => {
+    try {
+      const result = await axios.post(
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/blockuser`,
+        { username: username }
+      );
+      handleClose();
+      setisLoading(true);
+      handleEffect();
+    } catch (e) {
+      alert((e as any).response.data.message);
+      handleClose();
+    }
+  };
+
+  const handleUnblock = async (username: string) => {
+    try {
+      const result = await axios.post(
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/unlockuser`,
+        { username: username }
+      );
+      handleClose();
+      setisLoading(true);
+      handleEffect();
+    } catch (e) {
+      alert((e as any).response.data.message);
+      handleClose();
+    }
+  };
+
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    username: string
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectedUsername(username);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+    setSelectedUsername("");
   };
 
   const handleRefresh = () => {
@@ -101,11 +135,19 @@ export const Users = () => {
     handleEffect();
   };
 
-  const [statusFilter, setStatusFilter] = useState('');
+  const handleEnter = (e:React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleRefresh()
+    }
+  };
+
+  const [statusFilter, setStatusFilter] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
     setStatusFilter(event.target.value as string);
   };
+
+  const [selectedUsername, setSelectedUsername] = useState("");
 
   return (
     <div className="users">
@@ -114,6 +156,7 @@ export const Users = () => {
         <div className="searchBar">
           <TextField
             onChange={(e) => setInputSearch(e.target.value)}
+            onKeyDown={handleEnter}
             label="Username"
             style={{ width: "20%" }}
             InputProps={{
@@ -126,6 +169,7 @@ export const Users = () => {
           />
           <TextField
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleEnter}
             label="Email"
             style={{ marginLeft: "10px", width: "20%" }}
             InputProps={{
@@ -138,11 +182,7 @@ export const Users = () => {
           />
           <FormControl style={{ marginLeft: "10px", width: "20%" }}>
             <InputLabel>Status</InputLabel>
-            <Select
-              value={statusFilter}
-              label="All"
-              onChange={handleChange}
-            >
+            <Select value={statusFilter} label="All" onChange={handleChange}>
               <MenuItem value={"all"}>All</MenuItem>
               <MenuItem value={"false"}>Unblocked</MenuItem>
               <MenuItem value={"true"}>Blocked</MenuItem>
@@ -153,7 +193,7 @@ export const Users = () => {
             <Button
               sx={{ width: "50px", height: "50px" }}
               onClick={handleRefresh}
-              color="primary"
+              color="info"
               size="large"
               startIcon={<RefreshIcon />}
             ></Button>
@@ -185,26 +225,29 @@ export const Users = () => {
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
-                  <TableRow
-                    key={row.username}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
+                  <TableRow key={row.username}>
                     <TableCell component="th" scope="row">
                       {row.username}
                     </TableCell>
                     <TableCell align="left">{row.email}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={handleClick}>
+                      <IconButton onClick={(e) => handleClick(e, row.username)}>
                         <MoreVertIcon />
                       </IconButton>
                       <Menu
                         anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
+                        open={
+                          Boolean(anchorEl) && selectedUsername === row.username
+                        }
                         onClose={handleClose}
                       >
-                        <MenuItem onClick={handleClose}>Block</MenuItem>
-                        <MenuItem onClick={handleClose}>Unblock</MenuItem>
+                        <MenuItem onClick={() => handleBlock(row.username)}>
+                          Block
+                        </MenuItem>
+                        <MenuItem onClick={() => handleUnblock(row.username)}>
+                          Unblock
+                        </MenuItem>
                       </Menu>
                     </TableCell>
                   </TableRow>
