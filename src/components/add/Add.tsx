@@ -103,24 +103,30 @@ const Add: React.FC<Add> = ({ open, handleClose }) => {
             <TextField
               label="Username"
               value={username}
+              required
               onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               style={{ marginTop: "1%" }}
               label="Email"
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="inputRow2">
             <TextField
               label="Password"
+              type="password"
               value={password}
+              required
               onChange={(e) => setPassword(e.target.value)}
             />
             <TextField
               style={{ marginTop: "1%", marginBottom: "2%" }}
               label="Confirm Password"
+              type="password"
+              required
               value={confirmPass}
               onChange={(e) => setConfirmPass(e.target.value)}
             />

@@ -10,6 +10,7 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -24,6 +25,8 @@ import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
+import UserModal from "../../components/user_modal/UserModal";
+import Tooltip from "@mui/material/Tooltip";
 
 const MAX_ROWS = 6;
 
@@ -48,6 +51,12 @@ export const Users = () => {
   const [rows, setRows] = useState<Row[]>(emptyRow);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
 
   const handleEffect = async () => {
     if (statusFilter === "all") {
@@ -140,6 +149,11 @@ export const Users = () => {
     }
   };
 
+  const handleRowClick = (username: string) => {
+    setSelectedRowUsername(username);
+    handleOpenModal();
+  };
+
   const [statusFilter, setStatusFilter] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -147,6 +161,13 @@ export const Users = () => {
   };
 
   const [selectedUsername, setSelectedUsername] = useState("");
+
+  const [selectedRowUsername, setSelectedRowUsername] = useState("");
+
+  const closeModal = () => {
+    setSelectedRowUsername("");
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="users">
@@ -216,17 +237,43 @@ export const Users = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Username</TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Status</TableCell>
-                  <TableCell align="center">Action</TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                  >
+                    Username
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="left"
+                  >
+                    Email
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="left"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="center"
+                  >
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
                   <TableRow key={row.username}>
-                    <TableCell component="th" scope="row">
-                      {row.username}
+                    <TableCell
+                      className="clickable-row"
+                      onClick={() => handleRowClick(row.username)}
+                      component="th"
+                      scope="row"
+                    >
+                      <Tooltip title="View user profile" placement="top">
+                        <span className="tooltip-hover">{row.username}</span>
+                      </Tooltip>
                     </TableCell>
                     <TableCell align="left">{row.email}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
@@ -254,6 +301,11 @@ export const Users = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <UserModal
+            open={isModalOpen}
+            username={selectedRowUsername}
+            onClose={closeModal}
+          />
           <div className="pagination">
             {Array.from({ length: totalPages }).map((_, index) => (
               <Button

@@ -72,7 +72,9 @@ export const Admins = () => {
       });
       setRows(newRows);
       setisLoading(false);
-    } catch (e) {}
+    } catch (e) {
+      
+    }
   };
 
   useEffect(() => {
@@ -120,8 +122,8 @@ export const Admins = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Username</TableCell>
-                  <TableCell align="left">Email</TableCell>
+                  <TableCell style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }} >Username</TableCell>
+                  <TableCell style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }} align="left">Email</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
