@@ -25,7 +25,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 
-const MAX_ROWS = 5;
+const MAX_ROWS = 6;
 
 type User = {
   username: string;
@@ -63,13 +63,12 @@ export const Users = () => {
       setTotalPages(Math.ceil(result.data.totalcount / MAX_ROWS));
       const users = result.data.paginateData;
       let newRows: Row[] = [];
-      users.map((user: User) => {
-        const newRow = createData(
+      newRows = users.map((user: User) => {
+        return createData(
           user.username,
           user.email,
           user.isBlocked ? "Blocked" : "Unblocked"
         );
-        newRows = [...newRows, newRow];
       });
       setRows(newRows);
       setisLoading(false);
@@ -89,7 +88,7 @@ export const Users = () => {
 
   const handleBlock = async (username: string) => {
     try {
-      const result = await axios.post(
+      await axios.post(
         `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/blockuser`,
         { username: username }
       );
@@ -104,7 +103,7 @@ export const Users = () => {
 
   const handleUnblock = async (username: string) => {
     try {
-      const result = await axios.post(
+      await axios.post(
         `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/unlockuser`,
         { username: username }
       );
@@ -154,6 +153,52 @@ export const Users = () => {
       <div style={{ marginBottom: "1%" }}>
         <h1 className="title">Manage Users</h1>
       </div>
+      <div className="searchBar">
+        <TextField
+          onChange={(e) => setInputSearch(e.target.value)}
+          onKeyDown={handleEnter}
+          label="Username"
+          style={{ width: "20%" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleEnter}
+          label="Email"
+          style={{ marginLeft: "10px", width: "20%" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <FormControl style={{ marginLeft: "10px", width: "20%" }}>
+          <InputLabel>Status</InputLabel>
+          <Select value={statusFilter} label="All" onChange={handleChange}>
+            <MenuItem value={"all"}>All</MenuItem>
+            <MenuItem value={"false"}>Unblocked</MenuItem>
+            <MenuItem value={"true"}>Blocked</MenuItem>
+          </Select>
+        </FormControl>
+
+        <div className="refresh">
+          <Button
+            sx={{ width: "50px", height: "50px" }}
+            onClick={handleRefresh}
+            color="info"
+            size="large"
+            startIcon={<RefreshIcon />}
+          ></Button>
+        </div>
+      </div>
       {isLoading ? (
         <div
           style={{
@@ -167,52 +212,6 @@ export const Users = () => {
         </div>
       ) : (
         <div>
-          <div className="searchBar">
-            <TextField
-              onChange={(e) => setInputSearch(e.target.value)}
-              onKeyDown={handleEnter}
-              label="Username"
-              style={{ width: "20%" }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={handleEnter}
-              label="Email"
-              style={{ marginLeft: "10px", width: "20%" }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <FormControl style={{ marginLeft: "10px", width: "20%" }}>
-              <InputLabel>Status</InputLabel>
-              <Select value={statusFilter} label="All" onChange={handleChange}>
-                <MenuItem value={"all"}>All</MenuItem>
-                <MenuItem value={"false"}>Unblocked</MenuItem>
-                <MenuItem value={"true"}>Blocked</MenuItem>
-              </Select>
-            </FormControl>
-
-            <div className="refresh">
-              <Button
-                sx={{ width: "50px", height: "50px" }}
-                onClick={handleRefresh}
-                color="info"
-                size="large"
-                startIcon={<RefreshIcon />}
-              ></Button>
-            </div>
-          </div>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>

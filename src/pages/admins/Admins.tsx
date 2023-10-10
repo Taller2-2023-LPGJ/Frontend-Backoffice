@@ -59,7 +59,7 @@ export const Admins = () => {
   const handleEffect = async () => {
     try {
       const result = await axios.get(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins`,
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins?currentpage=${currentPage}&amountperpage=${MAX_ROWS}`,
         {}
       );
 
@@ -84,6 +84,24 @@ export const Admins = () => {
       <div style={{ marginBottom: "1%" }}>
         <h1 className="title">Manage admins</h1>
       </div>
+      <div className="button-row">
+        <Button
+          style={{ marginBottom: "1%", width: "8%" }}
+          variant="contained"
+          onClick={handleOpenModal}
+          endIcon={<PersonAddAlt1Icon />}
+        >
+          Add
+        </Button>
+        <Button
+          style={{ marginBottom: "1%", width: "8%", marginLeft: "1%" }}
+          variant="contained"
+          onClick={handleRefresh}
+          endIcon={<RefreshIcon />}
+        >
+          Refresh
+        </Button>
+      </div>
 
       {isLoading ? (
         <div
@@ -98,25 +116,6 @@ export const Admins = () => {
         </div>
       ) : (
         <div>
-          <div className="button-row">
-            <Button
-              style={{ marginBottom: "1%", width: "8%" }}
-              variant="contained"
-              onClick={handleOpenModal}
-              endIcon={<PersonAddAlt1Icon />}
-            >
-              Add
-            </Button>
-            <Button
-              style={{ marginBottom: "1%", width: "8%", marginLeft: "1%" }}
-              variant="contained"
-              onClick={handleRefresh}
-              endIcon={<RefreshIcon />}
-            >
-              Refresh
-            </Button>
-          </div>
-
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
