@@ -60,35 +60,46 @@ const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
 
   return (
     <Modal className="modal" open={open} onClose={onClose}>
-      <div className="modal-content">
-        <IconButton className="close" onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
+      <div>
         {isLoading ? (
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              height: "50vh",
+              height: "30vh",
             }}
           >
             <CircularProgress color="primary" />
           </div>
         ) : (
-          <div className="infoContainer">
-            <Typography variant="h5" className="infoHeader">
-              Username: {userInfo.username}
-            </Typography>
-            <Typography variant="h5" className="infoHeader">
-              Display Name: {userInfo.displayName}
-            </Typography>
-            <Typography variant="h5" className="infoHeader">
-              Location: {userInfo.location}
-            </Typography>
-            <Typography variant="h5" className="infoHeader">
-              Biography: {userInfo.biography}
-            </Typography>
+          <div className="modal-content">
+            <div>
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <IconButton className="close" onClick={handleClose}>
+                  <CloseIcon />
+                </IconButton>
+              </div>
+
+              <div className="infoContainer">
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Username: </span>
+                  <span className="label-info">{userInfo.username}</span>
+                </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Display Name: </span>
+                  <span className="label-info">{userInfo.displayName}</span>
+                </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Location: </span>
+                  <span className="label-info">{userInfo.location}</span>
+                </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Bio: </span>
+                  <span className="label-info">{userInfo.biography}</span>
+                </Typography>
+              </div>
+            </div>
           </div>
         )}
       </div>

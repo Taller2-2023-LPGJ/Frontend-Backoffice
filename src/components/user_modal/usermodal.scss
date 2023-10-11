@@ -8,7 +8,6 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0);
-  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,26 +16,22 @@
 .modal-content {
   background-color: $main-bg;
   padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  height: 50%;
-  position: relative;
+  border: 1px solid $dark-color;
 }
 
 .close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
   cursor: pointer;
 }
 
-.infoContainer {
-    display: flex;
-    flex-direction: column;
-    margin: 1%;
+.infoHeader {
+  color: $main-color;
 }
 
-.infoHeader {
-    color: $main-color;
-    margin-bottom: 1%;
+.label {
+  font-weight: bold;
+  color: $main-color;
+}
+
+.label-info {
+  color: $soft-color;
 }
