@@ -3,6 +3,7 @@ import "./navbar.scss";
 import { useAuth } from "../../context/AuthContext";
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export const Navbar = () => {
 
@@ -23,7 +24,7 @@ export const Navbar = () => {
       <div className="icons">
         <span>Logged in as: {user?.mail}</span>
         <span>|</span>
-        <Button variant="contained" onClick={handleLogout}>Logout</Button>
+        <Button variant="contained" onClick={handleLogout} endIcon={<LogoutIcon/>}>Logout</Button>
       </div>
     </div>
   );
