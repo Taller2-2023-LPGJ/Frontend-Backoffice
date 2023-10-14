@@ -63,6 +63,10 @@ export const Users = () => {
       setStatusFilter("");
     }
 
+    if (verifiedFilter === "all") {
+      setVerifiedFilter("");
+    }
+
     try {
       const result = await axios.get(
         `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?email=${email}&username=${inputSearch}&amountperpage=${MAX_ROWS}&isBlocked=${statusFilter}&currentpage=${currentPage}`,
@@ -157,10 +161,16 @@ export const Users = () => {
   };
 
   const [statusFilter, setStatusFilter] = useState("");
+  const [verifiedFilter, setVerifiedFilter] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
     setStatusFilter(event.target.value as string);
   };
+
+  const handleChangeVerifiedFilter = (event: SelectChangeEvent) => {
+    setVerifiedFilter(event.target.value as string);
+    console.log(event.target.value as string)
+  }
 
   const [selectedUsername, setSelectedUsername] = useState("");
 
@@ -214,6 +224,16 @@ export const Users = () => {
           </Select>
         </FormControl>
 
+        <FormControl style={{ marginLeft: "10px", width: "20%" }}>
+          <InputLabel>Verification</InputLabel>
+          <Select value={verifiedFilter} label="All" onChange={handleChangeVerifiedFilter}>
+            <MenuItem value={"all"}>All</MenuItem>
+            <MenuItem value={"verified"}>Verified</MenuItem>
+            <MenuItem value={"unverified"}>Unverified</MenuItem>
+            <MenuItem value={"pending"}>Pending</MenuItem>
+          </Select>
+        </FormControl>
+
         <div className="refresh">
           <Button
             sx={{ width: "50px", height: "50px" }}
@@ -260,6 +280,12 @@ export const Users = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="left"
+                  >
+                    Verified
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
                     align="center"
                   >
                     Action
@@ -281,6 +307,7 @@ export const Users = () => {
                     </TableCell>
                     <TableCell align="left">{row.email}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
+                    <TableCell align="left">{/*row.verified*/}Unverified</TableCell>
                     <TableCell align="center">
                       <IconButton onClick={(e) => handleClick(e, row.username)}>
                         <MoreVertIcon />
