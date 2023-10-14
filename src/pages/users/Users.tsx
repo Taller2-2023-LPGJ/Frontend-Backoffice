@@ -10,7 +10,6 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -51,6 +50,7 @@ export const Users = () => {
   const [rows, setRows] = useState<Row[]>(emptyRow);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -149,8 +149,10 @@ export const Users = () => {
     }
   };
 
-  const handleRowClick = (username: string) => {
+  const handleRowClick = (username: string,email:string,status:string) => {
     setSelectedRowUsername(username);
+    setSelectedRowEmail(email);
+    setSelectedRowStatus(status);
     handleOpenModal();
   };
 
@@ -163,6 +165,8 @@ export const Users = () => {
   const [selectedUsername, setSelectedUsername] = useState("");
 
   const [selectedRowUsername, setSelectedRowUsername] = useState("");
+  const [selectedRowEmail, setSelectedRowEmail] = useState("")
+  const [selectedRowStatus, setSelectedRowStatus] = useState("")
 
   const closeModal = () => {
     setSelectedRowUsername("");
@@ -267,7 +271,7 @@ export const Users = () => {
                   <TableRow key={row.username}>
                     <TableCell
                       className="clickable-row"
-                      onClick={() => handleRowClick(row.username)}
+                      onClick={() => handleRowClick(row.username,row.email,row.status)}
                       component="th"
                       scope="row"
                     >
@@ -305,6 +309,8 @@ export const Users = () => {
             open={isModalOpen}
             username={selectedRowUsername}
             onClose={closeModal}
+            email={selectedRowEmail}
+            status={selectedRowStatus}
           />
           <div className="pagination">
             {Array.from({ length: totalPages }).map((_, index) => (
