@@ -10,6 +10,8 @@ interface UserModalProps {
   open: boolean;
   username: string;
   onClose: () => void;
+  email: string;
+  status: string;
 }
 
 type UserInfo = {
@@ -21,7 +23,17 @@ type UserInfo = {
   dateOfBirth: string;
 };
 
-const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
+// TODO: fetch pp from profile
+const default_pp =
+  "https://firebasestorage.googleapis.com/v0/b/snapmsg-399802.appspot.com/o/default_avatar.png?alt=media&token=2f003c2c-19ca-491c-b6b1-a08154231245";
+
+const UserModal: React.FC<UserModalProps> = ({
+  open,
+  username,
+  onClose,
+  email,
+  status,
+}) => {
   const userSkeleton = {
     username: "",
     displayName: "",
@@ -32,6 +44,9 @@ const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
   const [userInfo, setUserInfo] = useState<UserInfo>(userSkeleton);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Usar este state para manejar la carga de la imagen
+  const [imageLoading, setImageLoading] = useState(true);
+
   const handleEffect = async () => {
     try {
       const result = await axios.get(
@@ -40,6 +55,7 @@ const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
       );
       setUserInfo(result.data);
       setIsLoading(false);
+      setImageLoading(false);
     } catch (e) {
       alert((e as any).response.data.message);
     }
@@ -47,6 +63,7 @@ const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
 
   const handleClose = () => {
     setIsLoading(true);
+    setImageLoading(true);
     onClose();
   };
 
@@ -80,6 +97,17 @@ const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
                   <CloseIcon />
                 </IconButton>
               </div>
+              {imageLoading ? (
+                <CircularProgress
+                  style={{ width: "100%", height: "100%" }}
+                  color="primary"
+                />
+              ) : (
+                <img
+                  style={{ width: "100%", height: "100%" }}
+                  src={default_pp}
+                />
+              )}
 
               <div className="infoContainer">
                 <Typography variant="h5" className="infoHeader">
@@ -90,6 +118,15 @@ const UserModal: React.FC<UserModalProps> = ({ open, username, onClose }) => {
                   <span className="label">Display Name: </span>
                   <span className="label-info">{userInfo.displayName}</span>
                 </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Email: </span>
+                  <span className="label-info">{email}</span>
+                </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Status: </span>
+                  <span className="label-info">{status}</span>
+                </Typography>
+
                 <Typography variant="h5" className="infoHeader">
                   <span className="label">Location: </span>
                   <span className="label-info">{userInfo.location}</span>
