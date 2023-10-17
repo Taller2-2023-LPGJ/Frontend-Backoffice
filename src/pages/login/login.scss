@@ -1,0 +1,29 @@
+@import "../../styles/variables.scss";
+
+.loginHbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: $main-bg;
+}
+
+.loginVbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5%;
+    background-color: $soft-bg;
+}
+
+.imgContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    color: $main-color;
+}
