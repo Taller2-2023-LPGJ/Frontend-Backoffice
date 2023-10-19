@@ -27,30 +27,36 @@ import axios from "axios";
 import UserModal from "../../components/user_modal/UserModal";
 import Tooltip from "@mui/material/Tooltip";
 
-const MAX_ROWS = 6;
+const MAX_ROWS = 8;
 
 type User = {
   username: string;
   email: string;
   isBlocked: boolean;
+  verified: string;
 };
 
 type Row = {
   username: string;
   email: string;
   status: string;
+  verified: string;
 };
 
-function createData(username: string, email: string, status: string) {
-  return { username, email, status };
+function createData(
+  username: string,
+  email: string,
+  status: string,
+  verified: string
+) {
+  return { username, email, status, verified };
 }
 
 export const Users = () => {
-  const emptyRow = [createData("", "", "")];
+  const emptyRow = [createData("", "", "", "")];
   const [rows, setRows] = useState<Row[]>(emptyRow);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -59,17 +65,9 @@ export const Users = () => {
   };
 
   const handleEffect = async () => {
-    if (statusFilter === "all") {
-      setStatusFilter("");
-    }
-
-    if (verifiedFilter === "all") {
-      setVerifiedFilter("");
-    }
-
     try {
       const result = await axios.get(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?email=${email}&username=${inputSearch}&amountperpage=${MAX_ROWS}&isBlocked=${statusFilter}&currentpage=${currentPage}`,
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/users?email=${email}&username=${inputSearch}&amountperpage=${MAX_ROWS}&isBlocked=${statusFilter}&currentpage=${currentPage}&verified=${verifiedFilter}`,
         {}
       );
 
@@ -80,7 +78,8 @@ export const Users = () => {
         return createData(
           user.username,
           user.email,
-          user.isBlocked ? "Blocked" : "Unblocked"
+          user.isBlocked ? "Blocked" : "Unblocked",
+          user.verified
         );
       });
       setRows(newRows);
@@ -94,9 +93,7 @@ export const Users = () => {
 
   const [inputSearch, setInputSearch] = useState("");
   const [email, setEmail] = useState("");
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const [isLoading, setisLoading] = useState(true);
 
   const handleBlock = async (username: string) => {
@@ -119,6 +116,36 @@ export const Users = () => {
       await axios.post(
         `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/unlockuser`,
         { username: username }
+      );
+      handleClose();
+      setisLoading(true);
+      handleEffect();
+    } catch (e) {
+      alert((e as any).response.data.message);
+      handleClose();
+    }
+  };
+
+  const handleVerify = async (username: string) => {
+    try {
+      await axios.post(
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/verifyuser`,
+        { username: username, action: "Yes" }
+      );
+      handleClose();
+      setisLoading(true);
+      handleEffect();
+    } catch (e) {
+      alert((e as any).response.data.message);
+      handleClose();
+    }
+  };
+
+  const handleRejectVerify = async (username: string) => {
+    try {
+      await axios.post(
+        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/verifyuser`,
+        { username: username, action: "No" }
       );
       handleClose();
       setisLoading(true);
@@ -153,7 +180,7 @@ export const Users = () => {
     }
   };
 
-  const handleRowClick = (username: string,email:string,status:string) => {
+  const handleRowClick = (username: string, email: string, status: string) => {
     setSelectedRowUsername(username);
     setSelectedRowEmail(email);
     setSelectedRowStatus(status);
@@ -169,14 +196,13 @@ export const Users = () => {
 
   const handleChangeVerifiedFilter = (event: SelectChangeEvent) => {
     setVerifiedFilter(event.target.value as string);
-    console.log(event.target.value as string)
-  }
+  };
 
   const [selectedUsername, setSelectedUsername] = useState("");
 
   const [selectedRowUsername, setSelectedRowUsername] = useState("");
-  const [selectedRowEmail, setSelectedRowEmail] = useState("")
-  const [selectedRowStatus, setSelectedRowStatus] = useState("")
+  const [selectedRowEmail, setSelectedRowEmail] = useState("");
+  const [selectedRowStatus, setSelectedRowStatus] = useState("");
 
   const closeModal = () => {
     setSelectedRowUsername("");
@@ -218,7 +244,7 @@ export const Users = () => {
         <FormControl style={{ marginLeft: "10px", width: "20%" }}>
           <InputLabel>Status</InputLabel>
           <Select value={statusFilter} label="All" onChange={handleChange}>
-            <MenuItem value={"all"}>All</MenuItem>
+            <MenuItem value={""}>All</MenuItem>
             <MenuItem value={"false"}>Unblocked</MenuItem>
             <MenuItem value={"true"}>Blocked</MenuItem>
           </Select>
@@ -226,11 +252,15 @@ export const Users = () => {
 
         <FormControl style={{ marginLeft: "10px", width: "20%" }}>
           <InputLabel>Verification</InputLabel>
-          <Select value={verifiedFilter} label="All" onChange={handleChangeVerifiedFilter}>
-            <MenuItem value={"all"}>All</MenuItem>
-            <MenuItem value={"verified"}>Verified</MenuItem>
-            <MenuItem value={"unverified"}>Unverified</MenuItem>
-            <MenuItem value={"pending"}>Pending</MenuItem>
+          <Select
+            value={verifiedFilter}
+            label="All"
+            onChange={handleChangeVerifiedFilter}
+          >
+            <MenuItem value={""}>All</MenuItem>
+            <MenuItem value={"Yes"}>Verified</MenuItem>
+            <MenuItem value={"No"}>Unverified</MenuItem>
+            <MenuItem value={"Pending"}>Pending</MenuItem>
           </Select>
         </FormControl>
 
@@ -297,7 +327,9 @@ export const Users = () => {
                   <TableRow key={row.username}>
                     <TableCell
                       className="clickable-row"
-                      onClick={() => handleRowClick(row.username,row.email,row.status)}
+                      onClick={() =>
+                        handleRowClick(row.username, row.email, row.status)
+                      }
                       component="th"
                       scope="row"
                     >
@@ -307,7 +339,7 @@ export const Users = () => {
                     </TableCell>
                     <TableCell align="left">{row.email}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
-                    <TableCell align="left">{/*row.verified*/}Unverified</TableCell>
+                    <TableCell align="left">{row.verified}</TableCell>
                     <TableCell align="center">
                       <IconButton onClick={(e) => handleClick(e, row.username)}>
                         <MoreVertIcon />
@@ -324,6 +356,14 @@ export const Users = () => {
                         </MenuItem>
                         <MenuItem onClick={() => handleUnblock(row.username)}>
                           Unblock
+                        </MenuItem>
+                        <MenuItem onClick={() => handleVerify(row.username)}>
+                          Accept Verification
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handleRejectVerify(row.username)}
+                        >
+                          Reject Verification
                         </MenuItem>
                       </Menu>
                     </TableCell>
