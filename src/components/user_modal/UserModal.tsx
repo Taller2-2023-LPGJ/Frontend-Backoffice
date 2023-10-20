@@ -40,30 +40,31 @@ const UserModal: React.FC<UserModalProps> = ({
     location: "",
     biography: "",
     dateOfBirth: "",
+    // following, followers, profilePic
   };
   const [userInfo, setUserInfo] = useState<UserInfo>(userSkeleton);
   const [isLoading, setIsLoading] = useState(true);
 
   // Usar este state para manejar la carga de la imagen
-  const [imageLoading, setImageLoading] = useState(true);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const handleEffect = async () => {
+
     try {
       const result = await axios.get(
-        `https://t2-profile-snap-msg-auth-profile-julianquino.cloud.okteto.net/${username}`,
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/profile/${username}`,
         {}
       );
+
       setUserInfo(result.data);
       setIsLoading(false);
-      setImageLoading(false);
     } catch (e) {
-      alert((e as any).response.data.message);
+      //alert((e as any).response.data.message);
     }
   };
 
   const handleClose = () => {
     setIsLoading(true);
-    setImageLoading(true);
     onClose();
   };
 
