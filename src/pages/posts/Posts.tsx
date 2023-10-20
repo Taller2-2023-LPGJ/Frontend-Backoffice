@@ -1,26 +1,88 @@
-import { Button, FormControl, InputAdornment, InputLabel, MenuItem, Select, TextField } from "@mui/material"
-import "./posts.scss"
+import { Button, InputAdornment, TextField } from "@mui/material";
+import "./posts.scss";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+
+interface PostCardProps {
+  post: {
+    id: string;
+    author: string;
+    displayName: string;
+    body: string;
+    creationDate: string;
+    editingDate: string | null;
+    likes: string;
+    tags: string[];
+    postImage: string | null;
+  };
+}
+
+const default_pp_url =
+  "https://firebasestorage.googleapis.com/v0/b/snapmsg-399802.appspot.com/o/default_avatar.png?alt=media&token=2f003c2c-19ca-491c-b6b1-a08154231245";
+
+const dummyPost = {
+  id: "7",
+  author: "gstfrenkel",
+  body: "hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola!",
+  creationDate: "2023-10-14",
+  editingDate: "2023-10-14",
+  likes: "2",
+  tags: ["Travel", "Sports"],
+  displayName: "gstfrenkel",
+  postImage: default_pp_url,
+};
+
+// main card
+const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  return (
+    <Card style={{ marginBottom: "10px" }}>
+      <CardHeader
+        avatar={
+          <Avatar
+            style={{ display: "inline-block", width: "40px", height: "40px" }}
+          >
+            <img
+              src={default_pp_url}
+              alt={`Avatar for ${post.author}`}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </Avatar>
+        }
+        title={`@${post.author}`}
+        subheader={post.displayName}
+      />
+      <CardContent>
+        <Typography variant="body1">{`${post.body}`}</Typography>
+      </CardContent>
+    </Card>
+  );
+};
 
 export const Posts = () => {
-
-  const [inputSearch, setInputSearch] = useState("");
-  const [email, setEmail] = useState("");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [usernameSearch, setUsernameSearch] = useState("");
+  const [content, setContent] = useState("");
   const [isLoading, setisLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  
   return (
     <div className="posts">
-        <div style={{ marginBottom: "1%" }}>
+      <div style={{ marginBottom: "1%" }}>
         <h1 className="title">Manage Posts</h1>
       </div>
       <div className="searchBar">
         <TextField
-          onChange={(e) => setInputSearch(e.target.value)}
-          onKeyDown={()=> console.log("a")}
+          onChange={(e) => setUsernameSearch(e.target.value)}
+          onKeyDown={() => console.log("a")} // si apreta enter...(handleKeyDown)
           label="Username"
           style={{ width: "20%" }}
           InputProps={{
@@ -32,9 +94,9 @@ export const Posts = () => {
           }}
         />
         <TextField
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={()=> console.log("a")}
-          label="Email"
+          onChange={(e) => setContent(e.target.value)}
+          onKeyDown={() => console.log("a")} // si apreta enter...(handleKeyDown)
+          label="Content"
           style={{ marginLeft: "10px", width: "20%" }}
           InputProps={{
             startAdornment: (
@@ -44,33 +106,11 @@ export const Posts = () => {
             ),
           }}
         />
-        <FormControl style={{ marginLeft: "10px", width: "20%" }}>
-          <InputLabel>Status</InputLabel>
-          <Select value={"a"} label="All" onChange={()=> console.log("a")}>
-            <MenuItem value={""}>All</MenuItem>
-            <MenuItem value={"false"}>Unblocked</MenuItem>
-            <MenuItem value={"true"}>Blocked</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl style={{ marginLeft: "10px", width: "20%" }}>
-          <InputLabel>Verification</InputLabel>
-          <Select
-            value={"a"}
-            label="All"
-            onChange={()=> console.log("a")}
-          >
-            <MenuItem value={""}>All</MenuItem>
-            <MenuItem value={"Yes"}>Verified</MenuItem>
-            <MenuItem value={"No"}>Unverified</MenuItem>
-            <MenuItem value={"Pending"}>Pending</MenuItem>
-          </Select>
-        </FormControl>
 
         <div className="refresh">
           <Button
             sx={{ width: "50px", height: "50px" }}
-            onClick={()=> console.log("a")}
+            onClick={() => console.log("a")} // handle refresh
             color="info"
             size="large"
             startIcon={<RefreshIcon />}
@@ -78,8 +118,61 @@ export const Posts = () => {
         </div>
       </div>
 
-
-
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ width: "90%" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+            <div style={{ width: "30%" }}>
+              <PostCard post={dummyPost} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="pagination">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <Button
+            variant="outlined"
+            style={{ margin: "3px" }}
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
