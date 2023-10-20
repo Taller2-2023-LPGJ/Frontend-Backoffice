@@ -84,7 +84,7 @@ export const Admins = () => {
   return (
     <div className="users">
       <div style={{ marginBottom: "1%" }}>
-        <h1 className="title">Manage admins</h1>
+        <h1 className="title">Manage Admins</h1>
       </div>
       <div className="button-row">
         <Button

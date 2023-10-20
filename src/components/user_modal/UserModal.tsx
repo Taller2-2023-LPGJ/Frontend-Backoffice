@@ -21,11 +21,10 @@ type UserInfo = {
   location: string;
   biography: string;
   dateOfBirth: string;
+  followed: string;
+  followers: string;
+  profilePicture: string;
 };
-
-// TODO: fetch pp from profile
-const default_pp =
-  "https://firebasestorage.googleapis.com/v0/b/snapmsg-399802.appspot.com/o/default_avatar.png?alt=media&token=2f003c2c-19ca-491c-b6b1-a08154231245";
 
 const UserModal: React.FC<UserModalProps> = ({
   open,
@@ -40,7 +39,9 @@ const UserModal: React.FC<UserModalProps> = ({
     location: "",
     biography: "",
     dateOfBirth: "",
-    // following, followers, profilePic
+    followed: "",
+    followers: "",
+    profilePicture: "",
   };
   const [userInfo, setUserInfo] = useState<UserInfo>(userSkeleton);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,7 +50,6 @@ const UserModal: React.FC<UserModalProps> = ({
   const [imageLoading, setImageLoading] = useState(false);
 
   const handleEffect = async () => {
-
     try {
       const result = await axios.get(
         `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/profile/${username}`,
@@ -59,7 +59,7 @@ const UserModal: React.FC<UserModalProps> = ({
       setUserInfo(result.data);
       setIsLoading(false);
     } catch (e) {
-      //alert((e as any).response.data.message);
+      alert((e as any).response.data.message);
     }
   };
 
@@ -106,7 +106,7 @@ const UserModal: React.FC<UserModalProps> = ({
               ) : (
                 <img
                   style={{ width: "100%", height: "100%" }}
-                  src={default_pp}
+                  src={userInfo.profilePicture}
                 />
               )}
 
@@ -136,8 +136,17 @@ const UserModal: React.FC<UserModalProps> = ({
                   <span className="label">Bio: </span>
                   <span className="label-info">{userInfo.biography}</span>
                 </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Following: </span>
+                  <span className="label-info">{userInfo.followed}</span>
+                </Typography>
+                <Typography variant="h5" className="infoHeader">
+                  <span className="label">Follwers: </span>
+                  <span className="label-info">{userInfo.followers}</span>
+                </Typography>
               </div>
             </div>
+            <div className="modal-backdrop" onClick={handleClose}></div>
           </div>
         )}
       </div>
