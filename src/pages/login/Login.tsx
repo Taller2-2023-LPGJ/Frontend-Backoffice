@@ -19,8 +19,8 @@ export const Login = () => {
     const result = await login(mail, pass);
 
     if (result && result.error) {
-      setIsLoading(false);
       alert(result.message);
+      setIsLoading(false);
       return;
     } else {
       setIsLoading(false);
