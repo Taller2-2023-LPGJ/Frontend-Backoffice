@@ -1,29 +1,41 @@
-import { Button, InputAdornment, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  InputAdornment,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+} from "@mui/material";
 import "./posts.scss";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
+import PostModal from "../../components/post_modal/PostModal";
 
-interface PostCardProps {
-  post: {
-    id: string;
-    author: string;
-    displayName: string;
-    body: string;
-    creationDate: string;
-    editingDate: string | null;
-    likes: string;
-    tags: string[];
-    postImage: string | null;
-  };
+type PostInfo = {
+  id: string;
+  author: string;
+  displayName: string;
+  body: string;
+  creationDate: string;
+  editingDate: string | null;
+  likes: string;
+  tags: string[];
+  postImage: string | null;
+}
+
+
+type Row = {
+  post: PostInfo
+};
+
+function createData(post:PostInfo) {
+  return { post };
 }
 
 const default_pp_url =
@@ -40,39 +52,63 @@ const dummyPost = {
   displayName: "gstfrenkel",
   postImage: default_pp_url,
 };
-
-// main card
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  return (
-    <Card style={{ marginBottom: "10px" }}>
-      <CardHeader
-        avatar={
-          <Avatar
-            style={{ display: "inline-block", width: "40px", height: "40px" }}
-          >
-            <img
-              src={default_pp_url}
-              alt={`Avatar for ${post.author}`}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </Avatar>
-        }
-        title={`@${post.author}`}
-        subheader={post.displayName}
-      />
-      <CardContent>
-        <Typography variant="body1">{`${post.body}`}</Typography>
-      </CardContent>
-    </Card>
-  );
+const dummyPost2 = {
+  id: "72",
+  author: "fafa",
+  body: "fafafa",
+  creationDate: "2023-10-14",
+  editingDate: "2023-10-14",
+  likes: "2",
+  tags: ["Travel", "Sports"],
+  displayName: "gstfrenkel",
+  postImage: null
 };
 
+const emptyPost : PostInfo = {
+  id: "",
+  author: "",
+  body: "",
+  creationDate: "",
+  editingDate: null,
+  likes: "",
+  tags: [""],
+  displayName: "",
+  postImage: null,
+};
+
+
 export const Posts = () => {
-  const [usernameSearch, setUsernameSearch] = useState("");
-  const [content, setContent] = useState("");
-  const [isLoading, setisLoading] = useState(true);
+
+  const [usernameSearch, setUsernameSearch] = useState(""); // search filter
+  const [content, setContent] = useState(""); // search filter
+  const [isLoading, setisLoading] = useState(false); 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRowPost, setSelectedRowPost] = useState(emptyPost);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedRowPost(emptyPost);
+    setIsModalOpen(false);
+  };
+
+
+  const handleRowClick = (post: PostInfo) => {
+    setSelectedRowPost(post);
+    handleOpenModal();
+  };
+
+  
+  //const [rows, setRows] = useState<Row[]>(emptyRow);
+  const dummy_row = [
+    createData(dummyPost),
+    createData(dummyPost2)
+  ];
+  const [rows, setRows] = useState<Row[]>(dummy_row);
 
   return (
     <div className="posts">
@@ -110,7 +146,7 @@ export const Posts = () => {
         <div className="refresh">
           <Button
             sx={{ width: "50px", height: "50px" }}
-            onClick={() => console.log("a")} // handle refresh
+            onClick={() => console.log("a")} // handle refresh (fetch data handle effect)
             color="info"
             size="large"
             startIcon={<RefreshIcon />}
@@ -118,61 +154,82 @@ export const Posts = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ width: "90%" }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
-            <div style={{ width: "30%" }}>
-              <PostCard post={dummyPost} />
-            </div>
+      {isLoading ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "50vh",
+          }}
+        >
+          <CircularProgress color="primary" />
+        </div>
+      ) : (
+        <div>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                  >
+                    Post Id
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                  >
+                    Username
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="left"
+                  >
+                    Post
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow
+                    className="clickable-row"
+                    key={row.post.id}
+                    onClick={() =>
+                      handleRowClick(row.post)
+                    }
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="left">{row.post.id}</TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.post.author}
+                    </TableCell>
+                    <TableCell align="left">{row.post.body}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <PostModal
+            open={isModalOpen}
+            post={selectedRowPost}
+            onClose={closeModal}
+          />
+          <div className="pagination">
+            {Array.from({ length: totalPages /*!!!!!! fix*/ }).map(
+              (_, index) => (
+                <Button
+                  variant="outlined"
+                  style={{ margin: "3px" }}
+                  key={index}
+                  onClick={() => setCurrentPage(index + 1)}
+                >
+                  {index + 1}
+                </Button>
+              )
+            )}
           </div>
         </div>
-      </div>
-      <div className="pagination">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <Button
-            variant="outlined"
-            style={{ margin: "3px" }}
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-          >
-            {index + 1}
-          </Button>
-        ))}
-      </div>
+      )}
     </div>
   );
 };

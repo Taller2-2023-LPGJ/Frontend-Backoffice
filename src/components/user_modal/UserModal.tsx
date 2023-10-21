@@ -15,7 +15,6 @@ interface UserModalProps {
 }
 
 type UserInfo = {
-  // profile picture?
   username: string;
   displayName: string;
   location: string;
@@ -91,7 +90,7 @@ const UserModal: React.FC<UserModalProps> = ({
             <CircularProgress color="primary" />
           </div>
         ) : (
-          <div className="modal-content">
+          <div className="user-modal-content">
             <div>
               <div style={{ display: "flex", justifyContent: "end" }}>
                 <IconButton className="close" onClick={handleClose}>
