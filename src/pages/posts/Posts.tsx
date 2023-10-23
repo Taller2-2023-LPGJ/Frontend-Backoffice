@@ -12,80 +12,77 @@ import {
   TextField,
 } from "@mui/material";
 import "./posts.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import PostModal from "../../components/post_modal/PostModal";
+import axios from "axios";
 
 type PostInfo = {
   id: string;
   author: string;
-  displayName: string;
+  private: boolean;
+  displayName: {
+    displayName: string;
+    picture: string;
+    verified: boolean;
+  };
   body: string;
   creationDate: string;
   editingDate: string | null;
   likes: string;
+  shares: string;
+  replies: string;
   tags: string[];
-  postImage: string | null;
-}
-
-
-type Row = {
-  post: PostInfo
 };
 
-function createData(post:PostInfo) {
+type Row = {
+  post: PostInfo;
+};
+
+function createData(post: PostInfo) {
   return { post };
 }
 
-const default_pp_url =
-  "https://firebasestorage.googleapis.com/v0/b/snapmsg-399802.appspot.com/o/default_avatar.png?alt=media&token=2f003c2c-19ca-491c-b6b1-a08154231245";
+const MAX_ROWS = 8;
 
-const dummyPost = {
-  id: "7",
-  author: "gstfrenkel",
-  body: "hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola!",
-  creationDate: "2023-10-14",
-  editingDate: "2023-10-14",
-  likes: "2",
-  tags: ["Travel", "Sports"],
-  displayName: "gstfrenkel",
-  postImage: default_pp_url,
-};
-const dummyPost2 = {
-  id: "72",
-  author: "fafa",
-  body: "fafafa",
-  creationDate: "2023-10-14",
-  editingDate: "2023-10-14",
-  likes: "2",
-  tags: ["Travel", "Sports"],
-  displayName: "gstfrenkel",
-  postImage: null
-};
-
-const emptyPost : PostInfo = {
+const emptyPost: PostInfo = {
   id: "",
   author: "",
   body: "",
+  private: false,
   creationDate: "",
   editingDate: null,
   likes: "",
   tags: [""],
-  displayName: "",
-  postImage: null,
+  displayName: {
+    displayName: "",
+    picture: "",
+    verified: false,
+  },
+  shares: "",
+  replies: "",
 };
 
-
 export const Posts = () => {
-
-  const [usernameSearch, setUsernameSearch] = useState(""); // search filter
-  const [content, setContent] = useState(""); // search filter
-  const [isLoading, setisLoading] = useState(false); 
+  const [usernameSearch, setUsernameSearch] = useState(""); 
+  const [content, setContent] = useState(""); 
+  const [isLoading, setisLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRowPost, setSelectedRowPost] = useState(emptyPost);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRefresh = () => {
+    setisLoading(true);
+    handleEffect();
+  };
+
+  const handleEnter = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleRefresh();
+    }
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -96,19 +93,35 @@ export const Posts = () => {
     setIsModalOpen(false);
   };
 
-
   const handleRowClick = (post: PostInfo) => {
     setSelectedRowPost(post);
     handleOpenModal();
   };
 
-  
-  //const [rows, setRows] = useState<Row[]>(emptyRow);
-  const dummy_row = [
-    createData(dummyPost),
-    createData(dummyPost2)
-  ];
-  const [rows, setRows] = useState<Row[]>(dummy_row);
+  const handleEffect = async () => {
+    try {
+      const result = await axios.get(
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?author=${usernameSearch}&body=${content}`,
+        {}
+      );
+
+      setTotalPages(Math.ceil(result.data.totalcount / MAX_ROWS));
+      const posts = result.data;
+      let newRows: Row[] = [];
+      newRows = posts.map((post: PostInfo) => {
+        return createData(post);
+      });
+      setRows(newRows);
+      setisLoading(false);
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    handleEffect();
+  }, [currentPage]);
+
+  const emptyRow = [createData(emptyPost)];
+  const [rows, setRows] = useState<Row[]>(emptyRow);
 
   return (
     <div className="posts">
@@ -118,7 +131,7 @@ export const Posts = () => {
       <div className="searchBar">
         <TextField
           onChange={(e) => setUsernameSearch(e.target.value)}
-          onKeyDown={() => console.log("a")} // si apreta enter...(handleKeyDown)
+          onKeyDown={handleEnter}
           label="Username"
           style={{ width: "20%" }}
           InputProps={{
@@ -131,7 +144,7 @@ export const Posts = () => {
         />
         <TextField
           onChange={(e) => setContent(e.target.value)}
-          onKeyDown={() => console.log("a")} // si apreta enter...(handleKeyDown)
+          onKeyDown={handleEnter}
           label="Content"
           style={{ marginLeft: "10px", width: "20%" }}
           InputProps={{
@@ -146,7 +159,7 @@ export const Posts = () => {
         <div className="refresh">
           <Button
             sx={{ width: "50px", height: "50px" }}
-            onClick={() => console.log("a")} // handle refresh (fetch data handle effect)
+            onClick={handleRefresh}
             color="info"
             size="large"
             startIcon={<RefreshIcon />}
@@ -194,9 +207,7 @@ export const Posts = () => {
                   <TableRow
                     className="clickable-row"
                     key={row.post.id}
-                    onClick={() =>
-                      handleRowClick(row.post)
-                    }
+                    onClick={() => handleRowClick(row.post)}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell align="left">{row.post.id}</TableCell>

@@ -13,13 +13,19 @@ interface PostModalProps {
 type PostInfo = {
   id: string;
   author: string;
-  displayName: string;
+  private: boolean;
+  displayName: {
+    displayName: string;
+    picture: string;
+    verified: boolean;
+  };
   body: string;
   creationDate: string;
   editingDate: string | null;
   likes: string;
+  shares: string;
+  replies: string;
   tags: string[];
-  postImage: string | null;
 };
 
 const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
@@ -43,12 +49,34 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
               <span className="label-info">{post.id}</span>
             </Typography>
             <Typography variant="h5" className="infoHeader">
+              <span className="label">Private Post: </span>
+              <span className="label-info">{post.private ? "Yes" : "No"}</span>
+            </Typography>
+            <Typography variant="h5" className="infoHeader">
               <span className="label">Author's Username: </span>
               <span className="label-info">{post.author}</span>
             </Typography>
             <Typography variant="h5" className="infoHeader">
+              <span className="label">
+                Profile Picture: <br />
+              </span>
+            </Typography>
+            <div style={{ display: "flex", justifyContent: "flex-start" }}>
+              <img
+                style={{ width: "25%", height: "25%" }}
+                src={post.displayName.picture}
+              />
+            </div>
+            <br />
+            <Typography variant="h5" className="infoHeader">
               <span className="label">Author's Display Name: </span>
-              <span className="label-info">{post.displayName}</span>
+              <span className="label-info">{post.displayName.displayName}</span>
+            </Typography>
+            <Typography variant="h5" className="infoHeader">
+              <span className="label">Author Verified: </span>
+              <span className="label-info">
+                {post.displayName.verified ? "Yes" : "No"}
+              </span>
             </Typography>
 
             <Typography variant="h5" className="infoHeader">
@@ -59,16 +87,6 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
               <span className="label-info">{post.body}</span>
             </Typography>
 
-            {post.postImage ? (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <img
-                  style={{ width: "50%", height: "50%" }}
-                  src={post.postImage}
-                />
-              </div>
-            ) : (
-              <div></div>
-            )}
             <br />
             <Typography variant="h5" className="infoHeader">
               <span className="label">Creation Date: </span>
@@ -87,6 +105,14 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
             <Typography variant="h5" className="infoHeader">
               <span className="label">Likes: </span>
               <span className="label-info">{post.likes}</span>
+            </Typography>
+            <Typography variant="h5" className="infoHeader">
+              <span className="label">Shares: </span>
+              <span className="label-info">{post.shares}</span>
+            </Typography>
+            <Typography variant="h5" className="infoHeader">
+              <span className="label">Replies: </span>
+              <span className="label-info">{post.replies}</span>
             </Typography>
 
             {post.tags.length ? (
