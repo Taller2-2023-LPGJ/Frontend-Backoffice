@@ -42,7 +42,7 @@ function createData(post: PostInfo) {
   return { post };
 }
 
-const MAX_ROWS = 2;
+const MAX_ROWS = 10;
 
 const emptyPost: PostInfo = {
   id: "",
@@ -65,11 +65,12 @@ export const Posts = () => {
   const [content, setContent] = useState("");
   const [isLoading, setisLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [selectedRowPost, setSelectedRowPost] = useState(emptyPost);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleRefresh = () => {
+    setCurrentPage(0)
     setisLoading(true);
     handleEffect();
   };
@@ -96,16 +97,16 @@ export const Posts = () => {
 
   const handleEffect = async () => {
     try {
+      console.log(`https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?page=${currentPage}&size=${MAX_ROWS}&author=${usernameSearch}&body=${content}`)
       const result = await axios.get(
         `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?page=${currentPage}&size=${MAX_ROWS}&author=${usernameSearch}&body=${content}`,
         {}
       );
 
-      
-      setTotalPages(Math.ceil(result.data.length/MAX_ROWS));
-      const posts = result.data;
-
-      console.log(posts)
+      const posts = result.data.posts;
+      console.log(result.data.count)
+      console.log(Math.ceil(result.data.count / MAX_ROWS))
+      setTotalPages(Math.ceil(result.data.count / MAX_ROWS));
 
       let newRows: Row[] = [];
       newRows = posts.map((post: PostInfo) => {
@@ -231,7 +232,7 @@ export const Posts = () => {
                 variant="outlined"
                 style={{ margin: "3px" }}
                 key={index}
-                onClick={() => setCurrentPage(index + 1)}
+                onClick={() => setCurrentPage(index + 1-1)}
               >
                 {index + 1}
               </Button>
