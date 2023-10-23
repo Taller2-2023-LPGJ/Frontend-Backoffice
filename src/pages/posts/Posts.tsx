@@ -18,15 +18,13 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import PostModal from "../../components/post_modal/PostModal";
 import axios from "axios";
 
-type PostInfo = {
+export type PostInfo = {
   id: string;
   author: string;
   private: boolean;
-  displayName: {
-    displayName: string;
-    picture: string;
-    verified: boolean;
-  };
+  displayName: string;
+  picture: string;
+  verified: boolean;
   body: string;
   creationDate: string;
   editingDate: string | null;
@@ -44,7 +42,7 @@ function createData(post: PostInfo) {
   return { post };
 }
 
-const MAX_ROWS = 8;
+const MAX_ROWS = 2;
 
 const emptyPost: PostInfo = {
   id: "",
@@ -55,18 +53,16 @@ const emptyPost: PostInfo = {
   editingDate: null,
   likes: "",
   tags: [""],
-  displayName: {
-    displayName: "",
-    picture: "",
-    verified: false,
-  },
+  displayName: "",
+  picture: "",
+  verified: false,
   shares: "",
   replies: "",
 };
 
 export const Posts = () => {
-  const [usernameSearch, setUsernameSearch] = useState(""); 
-  const [content, setContent] = useState(""); 
+  const [usernameSearch, setUsernameSearch] = useState("");
+  const [content, setContent] = useState("");
   const [isLoading, setisLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,12 +97,16 @@ export const Posts = () => {
   const handleEffect = async () => {
     try {
       const result = await axios.get(
-        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?author=${usernameSearch}&body=${content}`,
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?page=${currentPage}&size=${MAX_ROWS}&author=${usernameSearch}&body=${content}`,
         {}
       );
 
-      setTotalPages(Math.ceil(result.data.totalcount / MAX_ROWS));
+      
+      setTotalPages(Math.ceil(result.data.length/MAX_ROWS));
       const posts = result.data;
+
+      console.log(posts)
+
       let newRows: Row[] = [];
       newRows = posts.map((post: PostInfo) => {
         return createData(post);
@@ -226,18 +226,16 @@ export const Posts = () => {
             onClose={closeModal}
           />
           <div className="pagination">
-            {Array.from({ length: totalPages /*!!!!!! fix*/ }).map(
-              (_, index) => (
-                <Button
-                  variant="outlined"
-                  style={{ margin: "3px" }}
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </Button>
-              )
-            )}
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <Button
+                variant="outlined"
+                style={{ margin: "3px" }}
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+              >
+                {index + 1}
+              </Button>
+            ))}
           </div>
         </div>
       )}

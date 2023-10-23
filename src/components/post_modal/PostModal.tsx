@@ -3,30 +3,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import "./postmodal.scss";
+import { PostInfo } from "../../pages/posts/Posts";
 
 interface PostModalProps {
   open: boolean;
   post: PostInfo;
   onClose: () => void;
 }
-
-type PostInfo = {
-  id: string;
-  author: string;
-  private: boolean;
-  displayName: {
-    displayName: string;
-    picture: string;
-    verified: boolean;
-  };
-  body: string;
-  creationDate: string;
-  editingDate: string | null;
-  likes: string;
-  shares: string;
-  replies: string;
-  tags: string[];
-};
 
 const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
   const handleClose = () => {
@@ -56,6 +39,7 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
               <span className="label">Author's Username: </span>
               <span className="label-info">{post.author}</span>
             </Typography>
+            <div></div>
             <Typography variant="h5" className="infoHeader">
               <span className="label">
                 Profile Picture: <br />
@@ -63,22 +47,22 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
             </Typography>
             <div style={{ display: "flex", justifyContent: "flex-start" }}>
               <img
-                style={{ width: "25%", height: "25%" }}
-                src={post.displayName.picture}
+                style={{ width: "10%", height: "10%" }}
+                src={post.picture}
               />
             </div>
-            <br />
+            
             <Typography variant="h5" className="infoHeader">
               <span className="label">Author's Display Name: </span>
-              <span className="label-info">{post.displayName.displayName}</span>
+              <span className="label-info">{post.displayName}</span>
             </Typography>
             <Typography variant="h5" className="infoHeader">
               <span className="label">Author Verified: </span>
               <span className="label-info">
-                {post.displayName.verified ? "Yes" : "No"}
+                {post.verified ? "Yes" : "No"}
               </span>
             </Typography>
-
+            <br />
             <Typography variant="h5" className="infoHeader">
               <span className="label">
                 Post Body:
