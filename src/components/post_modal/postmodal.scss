@@ -12,11 +12,11 @@
   z-index: 1001;
 }
 
-.user-modal-content {
+.post-modal-content {
   background-color: $main-bg;
   padding: 20px;
   z-index: 1001;
-  width: 80%;
+  width: 40%; 
   border: 1px solid $dark-color;
   overflow: auto;
 }

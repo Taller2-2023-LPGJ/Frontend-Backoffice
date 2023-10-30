@@ -19,8 +19,9 @@ const usersCard = (
       <Typography variant="body2">
         • View users list.
         <br />
-        • View users info.
+        • View user profile.
         <br />• Block/Unblock user.
+        <br />• Verify user.
       </Typography>
     </CardContent>
   </React.Fragment>
