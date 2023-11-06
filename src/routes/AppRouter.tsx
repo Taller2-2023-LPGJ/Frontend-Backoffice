@@ -9,6 +9,7 @@ import { Navbar } from "../components/navbar/Navbar";
 import { Menu } from "../components/menu/Menu";
 import { Footer } from "../components/footer/Footer";
 import { Login } from "../pages/login/Login";
+import { UserMetrics } from "../pages/user_metrics/UserMetrics";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -51,15 +52,19 @@ export default function AppRouter() {
           path: "/posts",
           element: <Posts />,
         },
+        {
+          path: "/user_metrics",
+          element: <UserMetrics />,
+        },
       ],
     },
   ]);
 
   const publicRouter = createBrowserRouter([
     {
-        path: "/",
-        element: <Login />
-    }
+      path: "/",
+      element: <Login />,
+    },
   ]);
 
   return isAuthenticated ? (
