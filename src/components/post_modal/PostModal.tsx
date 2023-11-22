@@ -99,7 +99,7 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
               <span className="label-info">{post.replies}</span>
             </Typography>
 
-            {post.tags.length ? (
+            {post.tags && post.tags.length ? (
               <Typography variant="h5" className="infoHeader">
                 <span className="label">Tags: </span>
                 <span className="label-info">{post.tags.join(", ")}</span>

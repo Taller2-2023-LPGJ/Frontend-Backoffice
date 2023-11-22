@@ -70,7 +70,7 @@ export const Posts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleRefresh = () => {
-    setCurrentPage(0)
+    setCurrentPage(0);
     setisLoading(true);
     handleEffect();
   };
@@ -97,15 +97,17 @@ export const Posts = () => {
 
   const handleEffect = async () => {
     try {
-      console.log(`https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?page=${currentPage}&size=${MAX_ROWS}&author=${usernameSearch}&body=${content}`)
+      console.log(
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?page=${currentPage}&size=${MAX_ROWS}&author=${usernameSearch}&body=${content}`
+      );
       const result = await axios.get(
         `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin?page=${currentPage}&size=${MAX_ROWS}&author=${usernameSearch}&body=${content}`,
         {}
       );
 
       const posts = result.data.posts;
-      console.log(result.data.count)
-      console.log(Math.ceil(result.data.count / MAX_ROWS))
+      console.log(result.data.count);
+      console.log(Math.ceil(result.data.count / MAX_ROWS));
       setTotalPages(Math.ceil(result.data.count / MAX_ROWS));
 
       let newRows: Row[] = [];
@@ -186,17 +188,30 @@ export const Posts = () => {
               <TableHead>
                 <TableRow>
                   <TableCell
-                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    style={{
+                      fontWeight: "bolder",
+                      backgroundColor: "#222b3c",
+                      width: 200,
+                      minWidth: 200,
+                    }}
                   >
                     Post Id
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    style={{
+                      fontWeight: "bolder",
+                      backgroundColor: "#222b3c",
+                      width: 200,
+                      minWidth: 200,
+                    }}
                   >
                     Username
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    style={{
+                      fontWeight: "bolder",
+                      backgroundColor: "#222b3c",
+                    }}
                     align="left"
                   >
                     Post
@@ -232,7 +247,7 @@ export const Posts = () => {
                 variant="outlined"
                 style={{ margin: "3px" }}
                 key={index}
-                onClick={() => setCurrentPage(index + 1-1)}
+                onClick={() => setCurrentPage(index + 1 - 1)}
               >
                 {index + 1}
               </Button>
