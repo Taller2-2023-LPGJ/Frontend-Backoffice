@@ -46,21 +46,16 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
               </span>
             </Typography>
             <div style={{ display: "flex", justifyContent: "flex-start" }}>
-              <img
-                style={{ width: "10%", height: "10%" }}
-                src={post.picture}
-              />
+              <img style={{ width: "10%", height: "10%" }} src={post.picture} />
             </div>
-            
+
             <Typography variant="h5" className="infoHeader">
               <span className="label">Author's Display Name: </span>
               <span className="label-info">{post.displayName}</span>
             </Typography>
             <Typography variant="h5" className="infoHeader">
               <span className="label">Author Verified: </span>
-              <span className="label-info">
-                {post.verified ? "Yes" : "No"}
-              </span>
+              <span className="label-info">{post.verified ? "Yes" : "No"}</span>
             </Typography>
             <br />
             <Typography variant="h5" className="infoHeader">
@@ -68,7 +63,18 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
                 Post Body:
                 <br />
               </span>
-              <span className="label-info">{post.body}</span>
+              <span
+                className="label-info"
+                style={{
+                  maxWidth: "300px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "pre-line",
+                  wordBreak: "break-all",
+                }}
+              >
+                {post.body}
+              </span>
             </Typography>
 
             <br />

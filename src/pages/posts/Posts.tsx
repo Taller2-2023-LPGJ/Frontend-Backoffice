@@ -230,7 +230,11 @@ export const Posts = () => {
                     <TableCell component="th" scope="row">
                       {row.post.author}
                     </TableCell>
-                    <TableCell align="left">{row.post.body}</TableCell>
+                    <TableCell align="left">
+                      {row.post.body.length > 50
+                        ? `${row.post.body.substring(0, 50)}...`
+                        : row.post.body}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
