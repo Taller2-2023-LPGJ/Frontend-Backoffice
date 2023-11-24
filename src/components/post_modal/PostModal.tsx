@@ -35,6 +35,12 @@ const PostModal: React.FC<PostModalProps> = ({ open, post, onClose }) => {
               <span className="label">Private Post: </span>
               <span className="label-info">{post.private ? "Yes" : "No"}</span>
             </Typography>
+
+            <Typography variant="h5" className="infoHeader">
+              <span className="label">Blocked Post: </span>
+              <span className="label-info">{post.blocked ? "Yes" : "No"}</span>
+            </Typography>
+
             <Typography variant="h5" className="infoHeader">
               <span className="label">Author's Username: </span>
               <span className="label-info">{post.author}</span>

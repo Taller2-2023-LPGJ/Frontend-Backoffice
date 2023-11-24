@@ -1,7 +1,10 @@
 import {
   Button,
   CircularProgress,
+  IconButton,
   InputAdornment,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -17,6 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import PostModal from "../../components/post_modal/PostModal";
 import axios from "axios";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export type PostInfo = {
   id: string;
@@ -32,6 +36,7 @@ export type PostInfo = {
   shares: string;
   replies: string;
   tags: string[];
+  blocked: boolean;
 };
 
 type Row = {
@@ -42,7 +47,7 @@ function createData(post: PostInfo) {
   return { post };
 }
 
-const MAX_ROWS = 10;
+const MAX_ROWS = 8;
 
 const emptyPost: PostInfo = {
   id: "",
@@ -58,6 +63,7 @@ const emptyPost: PostInfo = {
   verified: false,
   shares: "",
   replies: "",
+  blocked: false,
 };
 
 export const Posts = () => {
@@ -68,6 +74,7 @@ export const Posts = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedRowPost, setSelectedRowPost] = useState(emptyPost);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleRefresh = () => {
     setCurrentPage(0);
@@ -75,10 +82,25 @@ export const Posts = () => {
     handleEffect();
   };
 
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedID("");
+  };
+
   const handleEnter = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleRefresh();
     }
+  };
+
+  const [selectedID, setSelectedID] = useState("");
+
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedID(id);
   };
 
   const handleOpenModal = () => {
@@ -88,6 +110,21 @@ export const Posts = () => {
   const closeModal = () => {
     setSelectedRowPost(emptyPost);
     setIsModalOpen(false);
+  };
+
+  const handleAction = async (id: string, action: boolean) => {
+    try {
+      await axios.put(
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/content/admin/${id}`,
+        { blocked: action }
+      );
+      handleClose();
+      setisLoading(true);
+      handleEffect();
+    } catch (e) {
+      alert((e as any).response.data.message);
+      handleClose();
+    }
   };
 
   const handleRowClick = (post: PostInfo) => {
@@ -106,6 +143,7 @@ export const Posts = () => {
       );
 
       const posts = result.data.posts;
+      console.log(posts);
       console.log(result.data.count);
       console.log(Math.ceil(result.data.count / MAX_ROWS));
       setTotalPages(Math.ceil(result.data.count / MAX_ROWS));
@@ -211,29 +249,74 @@ export const Posts = () => {
                     style={{
                       fontWeight: "bolder",
                       backgroundColor: "#222b3c",
+                      width: 600,
+                      minWidth: 600,
                     }}
                     align="left"
                   >
                     Post
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="right"
+                  >
+                    Blocked
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bolder", backgroundColor: "#222b3c" }}
+                    align="center"
+                  >
+                    Action
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
                   <TableRow
-                    className="clickable-row"
                     key={row.post.id}
-                    onClick={() => handleRowClick(row.post)}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell align="left">{row.post.id}</TableCell>
+                    <TableCell align="left">{row.post.id} </TableCell>
                     <TableCell component="th" scope="row">
                       {row.post.author}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell
+                      align="left"
+                      className="clickable-row"
+                      onClick={() => handleRowClick(row.post)}
+                    >
                       {row.post.body.length > 50
                         ? `${row.post.body.substring(0, 50)}...`
                         : row.post.body}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.post.blocked ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={(e) => handleClick(e, row.post.id)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={
+                          Boolean(anchorEl) &&
+                          selectedID === row.post.id
+                        }
+                        onClose={handleClose}
+                      >
+                        <MenuItem
+                          onClick={() => handleAction(row.post.id, true)}
+                        >
+                          Block
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handleAction(row.post.id, false)}
+                        >
+                          Unblock
+                        </MenuItem>
+                      </Menu>
                     </TableCell>
                   </TableRow>
                 ))}
