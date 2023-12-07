@@ -72,8 +72,8 @@ const Add: React.FC<Add> = ({ open, handleClose }) => {
 
     try {
       await axios.post(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/signup`,
-        { username: username, email: email, password: password }
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/users/admins/signup`,
+        { user: username, email: email, password: password }
       );
     } catch (e) {
       alert((e as any).response.data.message);

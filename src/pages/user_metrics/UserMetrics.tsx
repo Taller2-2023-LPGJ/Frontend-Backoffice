@@ -4,7 +4,6 @@ import "./user_metrics.scss";
 interface IframeInfo {
   src: string;
   title: string;
-  description: string;
 }
 
 interface IframeListProps {
@@ -18,7 +17,6 @@ const IframeList: React.FC<IframeListProps> = ({ iframes }) => {
         {iframes.map((iframe, index) => (
           <div key={index} style={{ width: '50%', padding: '10px', boxSizing: 'border-box' }}>
             <h3>{iframe.title}</h3>
-            <p>{iframe.description}</p>
             <iframe src={iframe.src} width="100%" height="305" title={iframe.title}></iframe>
           </div>
         ))}
@@ -29,44 +27,36 @@ const IframeList: React.FC<IframeListProps> = ({ iframes }) => {
 
 const iframes: IframeInfo[] = [
   {
-    src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
-    title: "Title 1",
-    description: "Description 1",
+    src: "https://us5.datadoghq.com/graph/embed?token=048e3a867ec5b39d83b2c5e11419aa84b70290db68911c326454d12442a13d3d&height=300&width=600&legend=true",
+    title: "New registered users",
   },
   {
     src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
-    title: "Title 2",
-    description: "Description 2",
-  },
-  {
-    src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
-    title: "Title 1",
-    description: "Description 1",
+    title: "Avg user recover password time",
   },
   {
     src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
     title: "Title 1",
-    description: "Description 1",
   },
   {
     src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
     title: "Title 1",
-    description: "Description 1",
   },
   {
     src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
     title: "Title 1",
-    description: "Description 1",
   },
   {
     src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
     title: "Title 1",
-    description: "Description 1",
   },
   {
     src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
     title: "Title 1",
-    description: "Description 1",
+  },
+  {
+    src: "https://us5.datadoghq.com/graph/embed?token=e17b70304afbf1ed288f4ad6bce9d854443daa80315fbc4979c2d7490ae6c596&height=300&width=600&legend=true",
+    title: "Title 1",
   }
 ];
 

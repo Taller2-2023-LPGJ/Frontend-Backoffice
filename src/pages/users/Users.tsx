@@ -99,8 +99,8 @@ export const Users = () => {
   const handleBlock = async (username: string) => {
     try {
       await axios.post(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/blockuser`,
-        { username: username }
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/users/admins/blockuser`,
+        { user: username }
       );
       handleClose();
       setisLoading(true);
@@ -114,8 +114,8 @@ export const Users = () => {
   const handleUnblock = async (username: string) => {
     try {
       await axios.post(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/unlockuser`,
-        { username: username }
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/users/admins/unlockuser`,
+        { user: username }
       );
       handleClose();
       setisLoading(true);
@@ -129,8 +129,8 @@ export const Users = () => {
   const handleVerify = async (username: string) => {
     try {
       await axios.post(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/verifyuser`,
-        { username: username, action: "Yes" }
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/users/admins/verifyuser`,
+        { user: username, action: "Yes" }
       );
       handleClose();
       setisLoading(true);
@@ -144,8 +144,8 @@ export const Users = () => {
   const handleRejectVerify = async (username: string) => {
     try {
       await axios.post(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins/verifyuser`,
-        { username: username, action: "No" }
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/users/admins/verifyuser`,
+        { user: username, action: "No" }
       );
       handleClose();
       setisLoading(true);
