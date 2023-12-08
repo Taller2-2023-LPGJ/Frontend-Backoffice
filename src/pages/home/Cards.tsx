@@ -55,6 +55,20 @@ const adminsCard = (
   </React.Fragment>
 );
 
+const userAnalyticsCard = (
+  <React.Fragment>
+    <CardContent>
+      <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
+        User Analytics
+      </Typography>
+      <Typography variant="body2">
+        • View user metrics.
+        <br />• Analyze the application's usage.
+      </Typography>
+    </CardContent>
+  </React.Fragment>
+);
+
 export default function OutlinedCard() {
   const navigate = useNavigate();
 
@@ -71,7 +85,10 @@ export default function OutlinedCard() {
         </Card>
       </div>
       <div onClick={() => navigate("/admins")}>
-        <Card className="card">{adminsCard}</Card>
+        <Card className="card" style={{ marginBottom: "1%" }}> {adminsCard}</Card>
+      </div>
+      <div onClick={() => navigate("/user_metrics")}>
+        <Card className="card">{userAnalyticsCard}</Card>
       </div>
     </div>
   );

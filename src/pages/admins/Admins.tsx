@@ -59,7 +59,7 @@ export const Admins = () => {
   const handleEffect = async () => {
     try {
       const result = await axios.get(
-        `https://t2-users-snap-msg-auth-user-julianquino.cloud.okteto.net/admins?currentpage=${currentPage}&amountperpage=${MAX_ROWS}`,
+        `https://t2-gateway-snap-msg-auth-gateway-julianquino.cloud.okteto.net/users/admins?currentpage=${currentPage}&amountperpage=${MAX_ROWS}`,
         {}
       );
 

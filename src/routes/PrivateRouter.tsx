@@ -7,6 +7,7 @@ import { Home } from "../pages/home/Home";
 import { Users } from "../pages/users/Users";
 import { Admins } from "../pages/admins/Admins";
 import { Posts } from "../pages/posts/Posts";
+import { UserMetrics } from "../pages/user_metrics/UserMetrics";
 
 export default function PrivateRouter() {
   const Layout = () => {
@@ -46,6 +47,10 @@ export default function PrivateRouter() {
         {
           path: "/posts",
           element: <Posts />,
+        },
+        {
+          path: "/user_metrics",
+          element: <UserMetrics />,
         },
       ],
     },

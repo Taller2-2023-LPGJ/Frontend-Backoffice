@@ -5,6 +5,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import ArticleIcon from "@mui/icons-material/Article";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 export const Menu = () => {
   return (
@@ -25,6 +26,10 @@ export const Menu = () => {
         <Link to="/admins" className="listItem">
           <ManageAccountsIcon fontSize="medium" />
           <span className="listItemTitle">Admins</span>
+        </Link>
+        <Link to="/user_metrics" className="listItem">
+          <BarChartIcon fontSize="medium" />
+          <span className="listItemTitle">User Analytics</span>
         </Link>
       </div>
     </div>
